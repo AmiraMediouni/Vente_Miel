@@ -15,15 +15,15 @@ public class Commande {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long orderId;
+    private Integer orderId;
     private  String orderFullName;
     private  String orderFullAddress;
     private String orderContactNumber;
     private String orderStatus;
     private Double orderAmount;
-    @OneToOne
+    @ManyToOne
     private Produit product;
-    @OneToOne
+    @ManyToOne
     private Utilisateur user;
     public Commande(String orderFullName, String orderFullAddress, String orderContactNumber, String orderStatus, Double orderAmount, Produit product, Utilisateur user) {
         this.orderFullName = orderFullName;
@@ -31,8 +31,8 @@ public class Commande {
         this.orderContactNumber = orderContactNumber;
         this.orderStatus = orderStatus;
         this.orderAmount = orderAmount;
-     /*   this.product = product;
-        this.user = user;*/
+       this.product = product;
+        this.user = user;
     }
 
    /* public Commande(String orderfullName, String orderfullAddress, String ordercontactNumber, String orderStatus, double orderAmount, Utilisateur user) {

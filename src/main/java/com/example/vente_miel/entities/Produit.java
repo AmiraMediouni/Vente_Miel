@@ -19,6 +19,7 @@ public class Produit {
     private  String nom;
     private  String description;
     private  Integer quantite;
+    private Integer quantiteRestante;
     private double prix;
     private String date_ajout;
     private String type;

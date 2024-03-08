@@ -2,11 +2,14 @@ package com.example.vente_miel.services;
 
 import com.example.vente_miel.auth.AuthenticationRequest;
 import com.example.vente_miel.auth.RegisterRequest;
+import com.example.vente_miel.entities.Role;
 import com.example.vente_miel.entities.Utilisateur;
 import com.example.vente_miel.exceptions.EmailAlreadyUsedException;
+import com.example.vente_miel.repositories.RoleRepository;
 import com.example.vente_miel.repositories.UtilisateurRepository;
 import com.example.vente_miel.responses.MessageResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,11 +27,16 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    @Autowired
+    RoleRepository roleRepository;
 
     public MessageResponse register(RegisterRequest request) throws EmailAlreadyUsedException {
         if (this.repository.existsByEmail(request.getEmail())) {
            throw new EmailAlreadyUsedException("Erreur: Email déja utilisé!");
                    }
+        Role role= roleRepository.findById("CLIENT").get();
+        Set <Role> roleSet=new HashSet<>();
+        roleSet.add(role);
         var utilisateur= Utilisateur.builder()
                .nom(request.getNom())
                 .prenom(request.getPrenom())
@@ -36,7 +44,7 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .addresse(request.getAddresse())
                 .telephone(request.getTelephone())
-              //  .role(request.getRole())
+                .role(roleSet)
                 .build();
         repository.save(utilisateur);
         var jwtToken=jwtService.generateToken(utilisateur);

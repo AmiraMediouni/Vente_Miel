@@ -5,6 +5,7 @@ import com.example.vente_miel.entities.Produit;
 import com.example.vente_miel.services.ProduitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -53,6 +54,11 @@ public class ProduitController {
     @DeleteMapping(value = "/deleteProduct/{id}")
     public void deleteProduit(@PathVariable("id") long id) {
         this.produitService.deleteProduitById(id);
+    }
+
+    @GetMapping({ "/getProductDetails/{isSingleProductCheckout}/{id}"})
+    public List<Produit> getProduitDetails( @PathVariable(name="isSingleProductCheckout") Boolean isSingleProductCheckout ,@PathVariable(name="id")  long id) {
+        return this.produitService.getProduitDetails(isSingleProductCheckout,id);
     }
 
     public Set<ImageModel> uploadImage(MultipartFile[] multipartFiles) throws IOException {

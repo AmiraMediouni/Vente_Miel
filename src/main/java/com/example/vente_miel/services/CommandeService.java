@@ -8,8 +8,8 @@ import com.example.vente_miel.repositories.UtilisateurRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 @Service
 public class CommandeService {
@@ -20,12 +20,15 @@ public class CommandeService {
     ProduitRepository produitRepository;
     @Autowired
     UtilisateurRepository utilisateurRepository;
+
     public void addNewCommande(CommandeInput commandeInput){
         List<CommandeQuantiteProduit> productQuantityList=commandeInput.getCommandeQuantiteList();
         for(CommandeQuantiteProduit o :productQuantityList){
             Produit product = produitRepository.findById(o.getProduiId()).get();
+
             String currentUser= JwtAuthenticationFilter.CURRENT_USER;
             Utilisateur user=utilisateurRepository.findByEmail(currentUser).get();
+
             Commande commande=new Commande(
                     commandeInput.getFullName(),
                     commandeInput.getFullAddress(),
@@ -36,28 +39,42 @@ public class CommandeService {
                     user
             );
             commandeRepository.save(commande);
+            product.setQuantiteRestante(product.getQuantite()-o.getQuantite());
+            produitRepository.save(product);
+        }
+
+    }
+    public List<Commande> getOrderDetails(){
+        String currentUser=JwtAuthenticationFilter.CURRENT_USER;
+        Utilisateur user=utilisateurRepository.findByEmail(currentUser).get();
+        return commandeRepository.findByUser(user);
+
+    }
+    public List<Commande> getAllOrderDetails( String status) {
+        List<Commande> orderDetails = new ArrayList<>();
+        if(status.equals("All")) {
+            commandeRepository.findAll().forEach(
+                    x -> orderDetails.add(x)
+            );
+        } else {
+            commandeRepository.findByOrderStatus(status).forEach(
+                    x -> orderDetails.add(x)
+            );
+        }
+
+            return orderDetails;
+    }
+
+    public void markOrderAsDelivered(Integer orderId) {
+        Commande commande = commandeRepository.findById(orderId).get();
+
+        if(commande != null) {
+            commande.setOrderStatus("Livrée");
+            commandeRepository.save(commande);
         }
 
     }
 
-   /* public List<Produit> produitList=new CopyOnWriteArrayList<>();
-    private int produitIdCount=1;
-    public List<Produit> getAllProduits(){
-        return produitRepository.findAll();
-    }
-
-    public Produit getProduitByID(long id){
-        return produitRepository.findById(id).get();
-    }
 
 
-    public Produit updateProduitByID(long id, Produit produit){
-        produit.setId(id);
-        return produitRepository.save(produit);
-
-    }
-    public void deleteProduitById(long id ){
-         produitRepository.deleteById(id);
-
-    }*/
 }

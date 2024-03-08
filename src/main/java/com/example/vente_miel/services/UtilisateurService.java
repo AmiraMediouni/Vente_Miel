@@ -27,20 +27,33 @@ public class UtilisateurService {
         return utilisateurRepository.findAll();
     }
 
-    public Utilisateur getUtilisateurByID(long id){
+    public Utilisateur getUtilisateurByID(int id){
         return utilisateurRepository.findById(id).get();
     }
 
     public Utilisateur addNewUtilisateur(Utilisateur utilisateur){
         return utilisateurRepository.save(utilisateur);
     }
+    public String getEncodedPassword(String password) {
+        return passwordEncoder.encode(password);
+    }
 
-    public Utilisateur updateUtilisateurByID(long id, Utilisateur utilisateur){
+    public Utilisateur registerNewUser(Utilisateur user){
+       Role role= roleRepository.findById("CLIENT").get();
+       Set <Role> roleSet=new HashSet<>();
+       roleSet.add(role);
+       String password=getEncodedPassword(user.getPassword());
+       user.setPassword(password);
+       user.setRole(roleSet);
+       return  utilisateurRepository.save(user);
+    }
+
+    public Utilisateur updateUtilisateurByID(int id, Utilisateur utilisateur){
         utilisateur.setId(id);
         return utilisateurRepository.save(utilisateur);
 
     }
-    public void deleteUtilisateurById(long id ){
+    public void deleteUtilisateurById(int id ){
          utilisateurRepository.deleteById(id);
 
     }

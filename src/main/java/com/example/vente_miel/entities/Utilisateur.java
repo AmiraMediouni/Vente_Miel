@@ -21,7 +21,7 @@ import java.util.Set;
 public class Utilisateur implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
     private  String nom;
     private  String prenom;
     private int telephone;

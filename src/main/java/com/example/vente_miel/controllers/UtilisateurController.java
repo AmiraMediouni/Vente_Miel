@@ -11,7 +11,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping(value ="/utilisateurs" )
+@RequestMapping(value ="/users" )
 public class UtilisateurController {
 
     @Autowired
@@ -23,7 +23,7 @@ public class UtilisateurController {
     }
 
     @GetMapping(value = "/{id}")
-    public Utilisateur getUtilisateurByID(@PathVariable("id") long id) {
+    public Utilisateur getUtilisateurByID(@PathVariable("id") int id) {
         return this.utilisateurService.getUtilisateurByID(id);
     }
 
@@ -31,14 +31,19 @@ public class UtilisateurController {
     public Utilisateur addNewUtilisateur(@RequestBody Utilisateur utilisateur) {
         return this.utilisateurService.addNewUtilisateur(utilisateur);
     }
+    @PostMapping({"/registerNewUser"})
+    public Utilisateur registerNewUser(@RequestBody Utilisateur utilisateur) {
+
+        return this.utilisateurService.registerNewUser(utilisateur);
+    }
 
     @PutMapping(value = "/{id}")
-    public Utilisateur updateUtilisateur(@PathVariable("id") long id, @RequestBody Utilisateur utilisateur) {
+    public Utilisateur updateUtilisateur(@PathVariable("id") int id, @RequestBody Utilisateur utilisateur) {
         return utilisateurService.updateUtilisateurByID(id, utilisateur);
     }
 
     @DeleteMapping(value = "/{id}")
-    public void deleteUtilisateur(@PathVariable("id") long id) {
+    public void deleteUtilisateur(@PathVariable("id") int id) {
         this.utilisateurService.deleteUtilisateurById(id);
     }
 

@@ -33,9 +33,11 @@ public class SecurityConfiguration {
                 .requestMatchers(
                         "authenticate",
                         "register",
-                        "utilisateurs/**",
+                        "users/**",
                         "products/**",
-                        "commandes/**"
+                        "orders/**"
+                        ,"createNewRole",
+                        "/addToCart/{productId}","getCartDetails","/deleteCartItem/{cartId}"
 
                         )
                 .permitAll()
